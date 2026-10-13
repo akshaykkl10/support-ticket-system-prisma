@@ -14,7 +14,7 @@ function shutdown(signal: string){
     shut = true
 
     console.log(` Recived ${signal}`)
-    server.close((serverError) => {
+    server.close((serverError: Error | undefined) => {
         if (serverError) {
             console.log(`Encountered : ${serverError}`)
         }

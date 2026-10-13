@@ -1,7 +1,7 @@
 import { Ticket, TicketPriority, TicketStatus } from "../types/types.js";
 import { deleteTicket, insertTicket, selectTicketById, selectTickets, updateDBStatus } from "../db/pool.js";
 
-export async function listTickets(): Promise<Ticket[]> {
+export async function listTickets() {
     return await selectTickets()
 }
 
@@ -20,6 +20,7 @@ export async function addTickets(customer_id:number, category_id: number, title:
 
 export async function updateStatus(id: string, status:TicketStatus) {
     const ticket = await selectTicketById(id)
+    if(selectTicketById == undefined) throw new Error("No corresponding ticket found")
     return updateDBStatus(id, status)
     
 }
@@ -41,5 +42,7 @@ export async function deleteFunc(id:string) {
 }
 
 export async function showTicketById(id:string) {
-    return await selectTicketById(id);
+    const result = await selectTicketById(id);
+    if(result == null) throw new Error("NO_TICKET_ID")
+    return result
 }

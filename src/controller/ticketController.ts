@@ -20,6 +20,12 @@ export async function showTickets(req: Request, res: Response): Promise<void> {
     res.status(200).json(tickets)
 }
 
+export async function showTicket(req: Request, res: Response): Promise<void> {
+    const {id} = req.params
+    let ticket = await showTicketById(String(id))
+    res.status(200).json(ticket)
+}
+
 export async function addTicket(req: Request, res: Response) {
     const {customer_id, category_id, title, description, priority} = req.body
     
