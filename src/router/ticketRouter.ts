@@ -1,10 +1,11 @@
 import { Router } from "express";
-import { addTicket, deleteTicket, showTickets, updateTicket } from "../controller/ticketController.js";
+import { addTicket, deleteTicket, showTicket, showTickets, updateTicket } from "../controller/ticketController.js";
 import { addTickets } from "../ticketService/ticketService.js";
 
 const ticketRouter = Router();
 
 ticketRouter.get("/", showTickets)
+ticketRouter.get("/:id", showTicket)
 
 ticketRouter.post("/", addTicket)
 ticketRouter.patch("/:id", updateTicket)
