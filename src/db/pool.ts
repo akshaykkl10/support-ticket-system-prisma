@@ -14,10 +14,10 @@ export const client: Pool = new Pool({
 // await client.connect()
 export const result = await client.query("select * from ticket;")
 
-export async function selectTickets(){
-    return await prisma.ticket.findMany()
+export async function selectTickets(): Promise<Ticket[]>{
+    return await prisma.ticket.findMany() as Ticket[]
 }
-export async function selectTicketById(id: string){
+export async function selectTicketById(id: number){
     return await prisma.ticket.findUnique({
         where: {
             id: Number(id)
@@ -37,7 +37,7 @@ export async function insertTicket(ticket: Ticket){
     })
     return result
 }
-export async function updateDBStatus(id: string, status: TicketStatus){
+export async function updateDBStatus(id: number, status: TicketStatus){
     const result = await prisma.ticket.update({
         where:{
             id: Number(id)
@@ -47,7 +47,7 @@ export async function updateDBStatus(id: string, status: TicketStatus){
     })
     return result
 }
-export async function deleteTicket(id: string){
+export async function deleteTicket(id: number){
     const result = await prisma.ticket.delete({
         where: {
             id: Number(id)

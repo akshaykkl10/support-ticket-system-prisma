@@ -5,9 +5,9 @@ export interface Ticket {
     customer_id: number
     category_id: number
     title: string
-    description: string
+    description: string | null
     priority: TicketPriority
     status: TicketStatus
-    createdat?: string
-    updateat?: string
+    createdat?: Date
+    updateat?: Date
 }
