@@ -1,6 +1,6 @@
 import { Pool } from "pg";
 import { DATABASE_HOST, DATABASE_NAME, DATABASE_PASSWORD, DATABASE_PORT, DATABASE_USER } from "../utils/env.js";
-import { Ticket, TicketStatus } from "../types/types.js";
+import { ArgQuery, PaginatedTicket, Ticket, TicketStatus } from "../types/types.js";
 import { prisma } from "../prisma/db.js";
 
 export const client: Pool = new Pool({
@@ -14,8 +14,31 @@ export const client: Pool = new Pool({
 // await client.connect()
 export const result = await client.query("select * from ticket;")
 
-export async function selectTickets(): Promise<Ticket[]>{
-    return await prisma.ticket.findMany() as Ticket[]
+export async function selectTickets(queries: ArgQuery): Promise<PaginatedTicket>{
+    const { where, OR, orderBy, skip, pageSize } = queries;
+    const finalWhere = {
+        ...where,
+        ...(OR && OR.length > 0 ? { OR } : {})
+    };
+    const findArgs: any = {
+        where:finalWhere
+    }
+    if(orderBy && Object.keys(orderBy).length > 0) {
+        findArgs.orderBy = orderBy
+    }
+    if (typeof skip === "number") {
+        findArgs.skip = skip;
+    }
+    if (typeof pageSize === "number") {
+        findArgs.take = pageSize;
+    }
+    const [result, total] = await prisma.$transaction([
+        prisma.ticket.findMany(findArgs),
+        prisma.ticket.count({
+            where: finalWhere
+        })
+    ])
+    return {data: result as Ticket[], total}
 }
 export async function selectTicketById(id: number){
     return await prisma.ticket.findUnique({
@@ -53,7 +76,6 @@ export async function deleteTicket(id: number){
             id: Number(id)
         }
     })
-    console.log(result)
     return result
 }
 

@@ -1,7 +1,7 @@
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import app from "../src/app.js";
 import { Server } from "node:http";
-import { Ticket } from "../src/types/types.js";
+import { PaginatedResponse, PaginatedTicket, Ticket } from "../src/types/types.js";
 import { addTickets, deleteFunc, listTickets, showTicketById, updateStatus } from "../src/ticketService/ticketService.js";
 
 
@@ -47,27 +47,34 @@ describe("Ticket API", ()=>{
         vi.clearAllMocks()
     })
     it("Tests the loading of ticket api", async() => {
-        vi.mocked(listTickets).mockResolvedValue([{
-            customer_id:1,
-            category_id:1,
-            title: "Mock Title",
-            description: "Mock Description",
-            priority: "low",
-            status: "open"
-        }])
+        const listMockResolve: PaginatedResponse = {
+            data: [
+                {
+                    id:1,
+                    customer_id:1,
+                    category_id:1,
+                    title: "Mock Title",
+                    description: "Mock Description",
+                    priority: "low",
+                    status: "open"
+                }
+            ],
+            pagination: {
+                page: 1,
+                pageSize: "-",
+                totalItems: 1,
+                totalPages: 1,
+                hasNextPage: false,
+                hasPreviousPage: false
+            }
+        }
+        vi.mocked(listTickets).mockResolvedValue(listMockResolve)
         const response = await fetch(`${baseUrl}/tickets`)
         expect(response.headers.get('content-type')).toBe("application/json; charset=utf-8")
         expect(response.status).toBe(200)
         const body = await response.json()
-        expect(Array.isArray(body)).toBe(true)
-        expect( body).toStrictEqual([{
-            customer_id:1,
-            category_id:1,
-            title: "Mock Title",
-            description: "Mock Description",
-            priority: "low",
-            status: "open"
-        }])
+        expect(typeof body).toBe("object")
+        expect( body).toStrictEqual(listMockResolve)
     })
     
     it("adds tickets through post method", async() => {
@@ -131,14 +138,14 @@ describe("Ticket API", ()=>{
 describe("Ticket Controllers", () => {
     
     it("updates a ticket", async() => {
-        vi.mocked(showTicketById).mockResolvedValue([{
+        vi.mocked(showTicketById).mockResolvedValue({
             customer_id:1,
             category_id:1,
             title: "Mock Title",
             description: "Mock Description",
             priority: "low",
             status: "closed"
-        }])
+        })
         
         
         const updateResponse = await fetch(`${baseUrl}/tickets/${1}`,{
@@ -152,11 +159,9 @@ describe("Ticket Controllers", () => {
         });
         const updatedTicketResponse = await updateResponse.json()
         expect(updatedTicketResponse).toStrictEqual(
-            expect.arrayContaining([
                 expect.objectContaining({
                     status: "closed",
                 })
-            ])
         );
     });
     

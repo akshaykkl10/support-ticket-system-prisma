@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 import { addTickets, deleteFunc, listTickets, showTicketById,  updateStatus } from "../ticketService/ticketService.js";
-import type { Ticket, TicketPriority, TicketStatus } from "../types/types.js";
+import type { Query, Ticket, TicketPriority, TicketStatus } from "../types/types.js";
 
 const validPriorities: TicketPriority[] = ["low", "medium", "high"];
 
 export async function showTickets(req: Request, res: Response): Promise<void> {
-    const queries = req.query
-    let tickets = await listTickets()
+    const queries = req.query as unknown as Query
+    let response = await listTickets(queries)
     // if("id" in queries && queries["id"] != undefined){
     //     tickets = tickets.filter(ticket => ticket.id == queries["id"])
     // }
@@ -17,7 +17,7 @@ export async function showTickets(req: Request, res: Response): Promise<void> {
     //     res.status(404).json({error: "Ticket not found"})
     //     return
     // }
-    res.status(200).json(tickets)
+    res.status(200).json(response)
 }
 
 export async function showTicket(req: Request, res: Response): Promise<void> {

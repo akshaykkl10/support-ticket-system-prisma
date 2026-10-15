@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from "express";
 
 
 export function errorHandler(err: Error, _req:Request, res: Response, next: NextFunction): void{
-    console.error(err.stack)
     if(err instanceof Error){
         console.error(err.stack)
         if(err instanceof SyntaxError ){
