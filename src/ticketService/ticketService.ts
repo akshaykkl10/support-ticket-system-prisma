@@ -28,13 +28,14 @@ export async function listTickets(queries: Query) {
         data: response.data,
         pagination: {
             page: queries.page ? Number(queries.page) : 1,
-            pageSize: queries.pagesize ? Number(queries.pagesize) : "-",
+            pageSize: queries.pagesize ? Number(queries.pagesize) : response.total,
             totalItems: response.total,
             totalPages,
             hasNextPage,
             hasPreviousPage
         }
     }
+    if (buildResponse.pagination.page > buildResponse.pagination.totalPages) throw new Error("INVALID_PAGE")
     return buildResponse
 }
 

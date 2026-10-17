@@ -10,7 +10,8 @@ export default defineConfig({
         exclude: [
             "node_modules/**",
             "dist/**",
-            "tests/services.test.ts"
+            "tests/services.test.ts",
+            "tests/dbreset.ts"
         ],
     },
 })
