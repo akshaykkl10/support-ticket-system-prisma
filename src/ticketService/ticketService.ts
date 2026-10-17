@@ -27,8 +27,8 @@ export async function listTickets(queries: Query) {
     const buildResponse = {
         data: response.data,
         pagination: {
-            page: queries.page ? queries.page : 1,
-            pageSize: queries.pagesize ? queries.pagesize : "-",
+            page: queries.page ? Number(queries.page) : 1,
+            pageSize: queries.pagesize ? Number(queries.pagesize) : "-",
             totalItems: response.total,
             totalPages,
             hasNextPage,
@@ -47,8 +47,8 @@ export async function addTickets(customer_id:number, category_id: number, title:
         priority,
         status
     }
-    await insertTicket(ticket)
-    return ticket
+    const response = await insertTicket(ticket)
+    return response as Ticket
 }
 
 export async function updateStatus(id: string, status:TicketStatus) {

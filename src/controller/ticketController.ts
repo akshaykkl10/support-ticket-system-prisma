@@ -28,7 +28,10 @@ export async function showTicket(req: Request, res: Response): Promise<void> {
 
 export async function addTicket(req: Request, res: Response) {
     const {customer_id, category_id, title, description, priority} = req.body
-    
+    const fields = [customer_id, category_id, title, description, priority]
+    if(fields.some(field => field === undefined)) {
+        throw new Error("INVALID_JSON")
+    }
     if( typeof title == "string" && 
         typeof description == "string" &&
         validPriorities.includes(priority as TicketPriority)
