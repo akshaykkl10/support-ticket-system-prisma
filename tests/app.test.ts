@@ -1,6 +1,6 @@
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import app from "../src/app.js";
-import { Server } from "node:http";
+import type { Server } from "node:http";
 import { PaginatedResponse, PaginatedTicket, Ticket } from "../src/types/types.js";
 import { addTickets, deleteFunc, listTickets, showTicketById, updateStatus } from "../src/ticketService/ticketService.js";
 
@@ -92,6 +92,8 @@ describe("Ticket API", ()=>{
             },
             method: "POST",
             body: JSON.stringify({
+                "customer_id": "1",
+                "category_id": "1",
                 "title" : "whatsapp",
                 "description": "skip problem",
                 "priority": "low",
