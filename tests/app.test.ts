@@ -61,7 +61,7 @@ describe("Ticket API", ()=>{
             ],
             pagination: {
                 page: 1,
-                pageSize: "-",
+                pageSize: 8,
                 totalItems: 1,
                 totalPages: 1,
                 hasNextPage: false,

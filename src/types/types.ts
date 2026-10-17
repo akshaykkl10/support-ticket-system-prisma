@@ -21,7 +21,7 @@ export interface PaginatedResponse  {
     data: Ticket[]
     pagination: {
         page: number
-        pageSize: number | string
+        pageSize: number 
         totalItems: number
         totalPages: number
         hasNextPage: boolean

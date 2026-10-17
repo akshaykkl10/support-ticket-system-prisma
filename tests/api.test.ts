@@ -1,7 +1,8 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import app from "../src/app.js";
 import request from "supertest";
 import { resetAndSeedDb } from "./dbreset.js";
+import * as poolModule from "../src/db/pool.js";
 
 
 beforeEach(async () => {
@@ -129,5 +130,13 @@ describe("http testing", () => {
             error: "Given page is not recommended"
         })
     })
-    
+    it(" reacts on a db error", async() => {
+        vi.spyOn(poolModule, "selectTickets").mockRejectedValue(new Error("DB_ERROR"))
+        const response = await request(app).get("/tickets")
+        expect(response.status).toEqual(400)
+        expect(response.body).toMatchObject({
+            error: "Database encountered an error"
+        })
+        vi.clearAllMocks()
+    })
 })

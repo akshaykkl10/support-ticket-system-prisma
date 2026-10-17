@@ -20,6 +20,10 @@ export function errorHandler(err: Error, _req:Request, res: Response, next: Next
             res.status(404).json({error: "Given page is not recommended"})
             next()
         }
+        if(err.message == "DB_ERROR") {
+            res.status(400).json({error: "Database encountered an error"})
+            next()
+        }
         res.status(400).json({error: "Unknown error"})
         next()
     }else {
